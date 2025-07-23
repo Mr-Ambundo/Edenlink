@@ -1,0 +1,106 @@
+<div class="logistics-container">
+    <section class="section-header">
+      <h1>Logistics Panel</h1>
+      <p class="section-description">Monitor and control your system's water, nutrients, and equipment status.</p>
+    </section>
+  
+    <div class="loading-container" *ngIf="isLoading">
+      <div class="loading-spinner"></div>
+      <p>Loading logistics data...</p>
+    </div>
+  
+    <div class="logistics-content" *ngIf="!isLoading">
+      <!-- System Status Section -->
+      <section class="system-status">
+        <div class="card">
+          <div class="card-header">
+            <h2>System Status</h2>
+            <div class="automation-toggle">
+              <span class="toggle-label">{{ isAutoMode ? 'Auto' : 'Manual' }} Mode</span>
+              <label class="switch">
+                <input type="checkbox" [checked]="isAutoMode" (change)="toggleAutomationMode()">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+  
+          <div class="status-grid">
+            <div class="status-item" [ngClass]="systemStatus.connectionStatus">
+              <div class="status-icon">📡</div>
+              <div class="status-details">
+                <h3>Connection</h3>
+                <p>{{ systemStatus.connectionStatus }}</p>
+              </div>
+            </div>
+            
+            <div class="status-item" [ngClass]="systemStatus.powerStatus">
+              <div class="status-icon">⚡</div>
+              <div class="status-details">
+                <h3>Power</h3>
+                <p>{{ systemStatus.powerStatus }}</p>
+              </div>
+            </div>
+            
+            <div class="status-item" *ngFor="let pump of systemStatus?.pumps" [ngClass]="pump.status">
+              <div class="status-icon">💧</div>
+              <div class="status-details">
+                <h3>Pump {{ pump.id }}</h3>
+                <p>{{ pump.status }}</p>
+                <button class="btn-primary" (click)="activatePump(pump.id)">Activate</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Nutrient Levels Section -->
+      <section class="nutrient-levels">
+        <div class="card">
+          <div class="card-header">
+            <h2>Nutrient Levels</h2>
+          </div>
+          <div class="nutrient-grid">
+            <div class="nutrient-item" *ngFor="let nutrient of nutrientLevels" [ngClass]="getStatusClass(nutrient.percentage)">
+              <div class="nutrient-icon">🧪</div>
+              <div class="nutrient-details">
+                <h3>{{ nutrient.name }}</h3>
+                <p>{{ nutrient.percentage }}%</p>
+                <button class="btn-secondary" (click)="refillNutrient(nutrient.id)">Refill</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Water Level Section -->
+      <section class="water-level">
+        <div class="card">
+          <div class="card-header">
+            <h2>Water Level</h2>
+          </div>
+          <div class="water-details" [ngClass]="getStatusClass(waterLevel.percentage)">
+            <h3>{{ waterLevel.percentage }}%</h3>
+            <button class="btn-secondary" (click)="refillWater()">Refill</button>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Usage Chart Section -->
+      <div class="usage-chart">
+        <h3>Water Usage History</h3>
+        <app-chart
+          [chartData]="waterChartData"
+          [chartOptions]="chartOptions">
+        </app-chart>
+      </div>
+  
+      <!-- Nutrient Usage Chart -->
+      <div class="usage-chart">
+        <h3>Nutrient Usage History</h3>
+        <app-chart
+          [chartData]="nutrientChartData"
+          [chartOptions]="chartOptions">
+        </app-chart>
+      </div>
+    </div>
+  </div>

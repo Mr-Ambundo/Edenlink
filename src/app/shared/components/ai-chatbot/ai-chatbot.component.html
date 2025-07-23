@@ -1,0 +1,27 @@
+<div class="ai-chatbot-container">
+    <div class="chat-icon" (click)="toggleChat()">🤖</div>
+    
+    <div class="chat-window" [ngClass]="{'open': isChatOpen}">
+      <div class="chat-header">
+        <div class="chat-title">Eden Link AI Assistant</div>
+        <div class="close-btn" (click)="toggleChat()">✕</div>
+      </div>
+      
+      <div class="chat-messages">
+        <div *ngFor="let message of messages" 
+             class="message" 
+             [ngClass]="{'user-message': message.fromUser, 'ai-message': !message.fromUser}">
+          <div class="message-content">{{ message.text }}</div>
+          <div class="message-time">{{ message.timestamp | date:'shortTime' }}</div>
+        </div>
+      </div>
+      
+      <div class="chat-input">
+        <input type="text" 
+               placeholder="Ask a question..." 
+               [(ngModel)]="newMessage" 
+               (keyup.enter)="sendMessage()">
+        <button (click)="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>

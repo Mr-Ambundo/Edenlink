@@ -1,0 +1,17 @@
+<!-- Main container -->
+<div class="app-container" [class.landing-page]="isLandingPage">
+  <!-- Sidebar -->
+  <app-sidebar *ngIf="showSidebar"></app-sidebar>
+    
+  <!-- Main content -->
+  <div class="main-content" [class.with-sidebar]="showSidebar">
+    <app-header></app-header>
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    <app-footer></app-footer>
+    </div>
+  
+    <!-- Floating AI Chatbot -->
+  <app-ai-chatbot *ngIf="showSidebar"></app-ai-chatbot>
+  </div>

@@ -1,0 +1,153 @@
+<!-- src/app/features/ai-tips/ai-tips.component.html -->
+<div class="ai-tips-container">
+    <section class="section-header">
+      <h1>AI-Powered Tips</h1>
+      <p class="section-description">Custom insights based on your farm's microclimate and plant health data.</p>
+    </section>
+    
+    <div class="tips-actions">
+      <button class="btn-refresh" (click)="refreshTips()" [disabled]="refreshingTips || isLoading">
+        <span class="refresh-icon" [class.spinning]="refreshingTips">↻</span>
+        <span>{{ refreshingTips ? 'Refreshing...' : 'Refresh Tips' }}</span>
+      </button>
+    </div>
+  
+    <div class="loading-container" *ngIf="isLoading">
+      <div class="loading-spinner"></div>
+      <p>Analyzing your farm data...</p>
+    </div>
+  
+    <section class="tips-section microclimate" *ngIf="!isLoading">
+      <h2>Microclimate Management</h2>
+      
+      <div class="sensor-summary">
+        <div class="sensor-reading" [ngClass]="getReadingStatus('temperature')">
+          <div class="sensor-icon">🌡️</div>
+          <div class="sensor-data">
+            <span class="sensor-label">Temperature</span>
+            <span class="sensor-value">{{ getReadingValue('temperature') }}</span>
+          </div>
+        </div>
+        
+        <div class="sensor-reading" [ngClass]="getReadingStatus('humidity')">
+          <div class="sensor-icon">💧</div>
+          <div class="sensor-data">
+            <span class="sensor-label">Humidity</span>
+            <span class="sensor-value">{{ getReadingValue('humidity') }}</span>
+          </div>
+        </div>
+        
+        <div class="sensor-reading" [ngClass]="getReadingStatus('light')">
+          <div class="sensor-icon">☀️</div>
+          <div class="sensor-data">
+            <span class="sensor-label">Light</span>
+            <span class="sensor-value">{{ getReadingValue('light') }}</span>
+          </div>
+        </div>
+        
+        <div class="sensor-reading" [ngClass]="getReadingStatus('co2')">
+          <div class="sensor-icon">🌬️</div>
+          <div class="sensor-data">
+            <span class="sensor-label">CO₂</span>
+            <span class="sensor-value">{{ getReadingValue('co2') }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tips-container">
+        <div class="tip-card" *ngFor="let tip of microclimateTips">
+          <div class="tip-header" [ngClass]="tip.priority">
+            <div class="tip-icon">{{ tip.priority === 'high' ? '⚠️' : '💡' }}</div>
+            <div class="tip-title">{{ tip.title }}</div>
+            <div class="tip-actions">
+              <button class="btn-icon" [ngClass]="{'active': tip.saved}" (click)="saveTip(tip.id)" title="Save tip">
+                <span class="icon">⭐</span>
+              </button>
+              <button class="btn-icon" (click)="dismissTip(tip.id)" title="Dismiss tip">
+                <span class="icon">✕</span>
+              </button>
+            </div>
+          </div>
+          <div class="tip-content">
+            <p>{{ tip.content }}</p>
+            <div class="tip-recommendation" *ngIf="tip.recommendation">
+              <strong>Recommendation:</strong> {{ tip.recommendation }}
+            </div>
+          </div>
+          <div class="tip-meta">
+            <span class="tip-time">{{ tip.timestamp | date:'MMM d, h:mm a' }}</span>
+            <span class="tip-source">Based on {{ tip.source }}</span>
+          </div>
+        </div>
+        
+        <div class="empty-tips" *ngIf="microclimateTips.length === 0">
+          <div class="empty-icon">🌈</div>
+          <p>Your microclimate conditions look great! No adjustment tips at the moment.</p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="tips-section health" *ngIf="!isLoading">
+      <h2>Plant Health</h2>
+      
+      <div class="tips-container">
+        <div class="tip-card" *ngFor="let tip of healthTips">
+          <div class="tip-header" [ngClass]="tip.priority">
+            <div class="tip-icon">{{ tip.priority === 'high' ? '⚠️' : '💡' }}</div>
+            <div class="tip-title">{{ tip.title }}</div>
+            <div class="tip-actions">
+              <button class="btn-icon" [ngClass]="{'active': tip.saved}" (click)="saveTip(tip.id)" title="Save tip">
+                <span class="icon">⭐</span>
+              </button>
+              <button class="btn-icon" (click)="dismissTip(tip.id)" title="Dismiss tip">
+                <span class="icon">✕</span>
+              </button>
+            </div>
+          </div>
+          <div class="tip-content">
+            <p>{{ tip.content }}</p>
+            <div class="tip-recommendation" *ngIf="tip.recommendation">
+              <strong>Recommendation:</strong> {{ tip.recommendation }}
+            </div>
+            <div class="tip-image" *ngIf="tip.imageUrl" [style.backgroundImage]="'url(' + tip.imageUrl + ')'"></div>
+          </div>
+          <div class="tip-meta">
+            <span class="tip-time">{{ tip.timestamp | date:'MMM d, h:mm a' }}</span>
+            <span class="tip-source">Based on {{ tip.source }}</span>
+          </div>
+        </div>
+        
+        <div class="empty-tips" *ngIf="healthTips.length === 0">
+          <div class="empty-icon">🌱</div>
+          <p>Your plants appear healthy! No health issues detected.</p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="tips-section general" *ngIf="!isLoading && generalTips.length > 0">
+      <h2>General Farming Tips</h2>
+      
+      <div class="tips-container">
+        <div class="tip-card" *ngFor="let tip of generalTips">
+          <div class="tip-header" [ngClass]="tip.priority">
+            <div class="tip-icon">💡</div>
+            <div class="tip-title">{{ tip.title }}</div>
+            <div class="tip-actions">
+              <button class="btn-icon" [ngClass]="{'active': tip.saved}" (click)="saveTip(tip.id)" title="Save tip">
+                <span class="icon">⭐</span>
+              </button>
+              <button class="btn-icon" (click)="dismissTip(tip.id)" title="Dismiss tip">
+                <span class="icon">✕</span>
+              </button>
+            </div>
+          </div>
+          <div class="tip-content">
+            <p>{{ tip.content }}</p>
+          </div>
+          <div class="tip-meta">
+            <span class="tip-time">{{ tip.timestamp | date:'MMM d, h:mm a' }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>

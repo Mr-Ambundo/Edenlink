@@ -1,0 +1,11 @@
+<div class="training-container">
+    <h1>Training Modules</h1>
+    <div class="training-list">
+      <div *ngFor="let module of trainingModules" class="training-card">
+        <h3>{{ module.title }}</h3>
+        <p>{{ module.description }}</p>
+        <span class="duration">Duration: {{ module.duration }}</span>
+        <button class="btn-primary">Start Training</button>
+      </div>
+    </div>
+  </div>

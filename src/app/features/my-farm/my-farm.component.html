@@ -1,0 +1,199 @@
+<!-- src/app/features/my-farm/my-farm.component.html -->
+<div class="my-farm-container">
+    <section class="section-header">
+      <h1>My Farm</h1>
+      <p class="section-description">Manage your planting history and discover recommended plants based on your farm's conditions.</p>
+    </section>
+  
+    <!-- Farm Info Card -->
+    <section class="farm-info">
+      <div class="farm-card">
+        <div class="farm-header">
+          <h2>Love Valley Farm</h2>
+          <div class="farm-actions">
+            <button class="btn-primary">Add Crop</button>
+            <button class="btn-secondary">Edit Farm</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Currently Growing Crops -->
+    <section class="current-crops">
+      <div class="section-title">
+        <h2>Currently Growing</h2>
+      </div>
+      <div class="growing-crops-container">
+        <div class="crop-card">
+          <div class="crop-header">
+            <h3>Coriander</h3>
+            <span class="plant-date">Planted: Apr 10, 2025</span>
+          </div>
+          <div class="crop-details">
+            <div class="growth-stage">
+              <span>Current Stage: Week 2</span>
+            </div>
+            <div class="health-status">
+              <span>Health: 85%</span>
+              <div class="health-bar">
+                <div class="health-fill" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="maturity-progress">
+              <span>Maturity Progress</span>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 45%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="crop-card">
+          <div class="crop-header">
+            <h3>Bell Peppers</h3>
+            <span class="plant-date">Planted: Apr 15, 2025</span>
+          </div>
+          <div class="crop-details">
+            <div class="growth-stage">
+              <span>Current Stage: Week 1</span>
+            </div>
+            <div class="health-status">
+              <span>Health: 85%</span>
+              <div class="health-bar">
+                <div class="health-fill" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="maturity-progress">
+              <span>Maturity Progress</span>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 65%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <section class="planting-history">
+      <div class="section-title">
+        <h2>Planting History</h2>
+        <button class="btn-export">Export History</button>
+      </div>
+  
+      <div class="table-container">
+        <table *ngIf="!isLoading && plantingHistory.length > 0">
+          <thead>
+            <tr>
+              <th>Plant Name</th>
+              <th>Planting Date</th>
+              <th>Harvest Date</th>
+              <th>Status</th>
+              <th>Yield</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let record of plantingHistory">
+              <td>{{ record.plantName }}</td>
+              <td>{{ record.plantingDate | date:'MMM d, y' }}</td>
+              <td>{{ record.harvestDate | date:'MMM d, y' }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="record.status.toLowerCase()">
+                  {{ record.status }}
+                </span>
+              </td>
+              <td>{{ record.yield }} {{ record.yieldUnit }}</td>
+              <td>
+                <button class="btn-icon" title="View Details">
+                  <i class="icon-details"></i>
+                </button>
+                <button class="btn-icon" title="Edit">
+                  <i class="icon-edit"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <div *ngIf="isLoading" class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Loading history data...</p>
+        </div>
+  
+        <div *ngIf="!isLoading && plantingHistory.length === 0" class="empty-state">
+          <div class="empty-icon">🌱</div>
+          <h3>No Planting History Yet</h3>
+          <p>Start by adding your first plant to track its growth journey.</p>
+          <button class="btn-primary">Add First Plant</button>
+        </div>
+      </div>
+  
+      <div class="pagination" *ngIf="totalItems > itemsPerPage">
+        <button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">Previous</button>
+        <span>Page {{ currentPage }} of {{ Math.ceil(totalItems / itemsPerPage) }}</span>
+        <button [disabled]="currentPage >= totalItems / itemsPerPage" (click)="onPageChange(currentPage + 1)">Next</button>
+      </div>
+    </section>
+  
+    <section class="suggested-plants">
+      <div class="section-title">
+        <h2>Suggested Plants</h2>
+        <p>Based on your current farm conditions</p>
+      </div>
+  
+      <div class="plant-cards">
+        <div class="plant-card" *ngFor="let plant of suggestedPlants">
+          <div class="plant-image" [style.backgroundImage]="'url(' + plant.imageUrl + ')'"></div>
+          <div class="plant-info">
+            <h3>{{ plant.name }}</h3>
+            <div class="plant-metrics">
+              <div class="metric">
+                <span class="icon">🌡️</span>
+                <span>{{ plant.idealTemperature }}°C</span>
+              </div>
+              <div class="metric">
+                <span class="icon">💧</span>
+                <span>{{ plant.idealHumidity }}%</span>
+              </div>
+              <div class="metric">
+                <span class="icon">☀️</span>
+                <span>{{ plant.idealLight }} lux</span>
+              </div>
+            </div>
+            <p class="ai-suggestion">{{ plant.aiSuggestion }}</p>
+            <button class="btn-secondary" (click)="viewPlantDetails(plant)">View Details</button>
+          </div>
+        </div>
+  
+        <!-- Additional Spinach Card -->
+        <div class="plant-card">
+          <div class="plant-image" [style.backgroundImage]="'url(' + spinachCrop.imageUrl + ')'"></div>
+          <div class="plant-info">
+            <h3>{{ spinachCrop.name }}</h3>
+            <div class="plant-metrics">
+              <div class="metric">
+                <span class="icon">🌡️</span>
+                <span>{{ spinachCrop.idealTemperature }}°C</span>
+              </div>
+              <div class="metric">
+                <span class="icon">💧</span>
+                <span>{{ spinachCrop.idealHumidity }}%</span>
+              </div>
+              <div class="metric">
+                <span class="icon">☀️</span>
+                <span>{{ spinachCrop.idealLight }} lux</span>
+              </div>
+            </div>
+            <p class="ai-suggestion">{{ spinachCrop.aiSuggestion }}</p>
+            <button class="btn-secondary" (click)="viewPlantDetails(spinachCrop)">View Details</button>
+          </div>
+        </div>
+      </div>
+  
+      <div *ngIf="suggestedPlants.length === 0" class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <h3>Gathering Suggestions</h3>
+        <p>Our AI is analyzing your farm conditions to recommend suitable plants.</p>
+      </div>
+    </section>
+  </div>

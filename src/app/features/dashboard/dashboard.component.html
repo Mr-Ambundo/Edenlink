@@ -1,0 +1,134 @@
+<div class="dashboard-container">
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Dashboard</h1>
+      <div class="dashboard-actions">
+        <button class="btn btn-outline" (click)="exportData()">Export Data</button>
+
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Real-Time Charts</h2>
+      </div>
+      <div class="metrics-grid">
+        <app-metric-card
+          name="Temperature"
+          icon="🌡️"
+          [currentValue]="currentMetrics.temperature"
+          [minOptimal]="20"
+          [maxOptimal]="25"
+          unit="°C"
+          [maxRange]="35">
+        </app-metric-card>
+
+        <app-metric-card
+          name="Humidity"
+          icon="💧"
+          [currentValue]="currentMetrics.humidity"
+          [minOptimal]="55"
+          [maxOptimal]="70"
+          unit="%"
+          [maxRange]="100">
+        </app-metric-card>
+
+        <app-metric-card
+          name="Light"
+          icon="☀️"
+          [currentValue]="currentMetrics.light"
+          [minOptimal]="500"
+          [maxOptimal]="800"
+          unit=" lux"
+          [maxRange]="1000">
+        </app-metric-card>
+
+        <app-metric-card
+          name="EC"
+          icon="⚡"
+          [currentValue]="currentMetrics.ec"
+          [minOptimal]="1.5"
+          [maxOptimal]="2.2"
+          unit=" mS/cm"
+          [maxRange]="3.0">
+        </app-metric-card>
+
+        <app-metric-card
+          name="pH"
+          icon="🧪"
+          [currentValue]="currentMetrics.ph"
+          [minOptimal]="6.0"
+          [maxOptimal]="6.8"
+          unit=""
+          [maxRange]="14">
+        </app-metric-card>
+      </div>
+
+      <div class="chart-container">
+        <app-chart 
+          *ngIf="chartData" 
+          [chartData]="chartData"
+          [chartOptions]="chartOptions">
+        </app-chart>
+      </div>
+      <div class="system-health" [ngClass]="'system-health-' + systemHealth.status">
+        <div class="system-health-icon">
+          <span [ngSwitch]="systemHealth.status">
+            <span *ngSwitchCase="'excellent'">✓</span>
+            <span *ngSwitchCase="'warning'">⚠️</span>
+            <span *ngSwitchCase="'critical'">❌</span>
+            <span *ngSwitchDefault>✓</span>
+          </span>
+        </div>
+        <div class="system-health-content">
+          <div class="system-health-title">System Health: {{ systemHealth.status | titlecase }}</div>
+          <div class="system-health-message">{{ systemHealth.message }}</div>
+          <div class="ai-suggestions" *ngIf="systemHealth.suggestions?.length">
+            <h4>🤖 AI Suggestions:</h4>
+            <ul>
+              <li *ngFor="let suggestion of systemHealth.suggestions">{{ suggestion }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Active Crop Cycles</h2>
+      </div>
+      <div class="crop-cycles">
+        <div class="crop-cycle" *ngFor="let cycle of cropCycles">
+          <div class="crop-header">
+            <div class="crop-name">{{ cycle.crop.name }}</div>
+            <div class="crop-dates">
+              Planted: {{ cycle.crop.plantedDate | date:'mediumDate' }} • 
+              Expected Harvest: {{ cycle.crop.expectedHarvestDate | date:'mediumDate' }}
+            </div>
+          </div>
+          <div class="crop-roadmap">
+            <div class="roadmap-step" *ngFor="let stage of cycle.stages; let i = index">
+              <div class="step-icon" 
+                   [ngClass]="{'active': stage.active, 'completed': stage.completed}">
+                {{ stage.completed ? '✓' : i + 1 }}
+              </div>
+              <div class="step-content">
+                <div class="step-label">{{ stage.name }}</div>
+                <div class="step-details" *ngIf="stage.active">
+                  <div class="step-details-main">
+                    <div class="stage-description">{{ stage.description }}</div>
+                    <div class="stage-date">Started: {{ stage.startDate | date:'mediumDate' }}</div>
+                  </div>
+                  <div class="required-actions" *ngIf="stage.requiredActions?.length">
+                    <h4>Required Actions:</h4>
+                    <ul>
+                      <li *ngFor="let action of stage.requiredActions">{{ action }}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

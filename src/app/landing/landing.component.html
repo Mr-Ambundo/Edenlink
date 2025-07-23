@@ -1,0 +1,84 @@
+<div class="landing-container">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Precision Hydroponic Farming for a Sustainable Future</h1>
+      <p class="hero-subtitle">Transform your hydroponic operations with AI-powered insights and real-time monitoring</p>
+      <div class="hero-cta">
+        <button class="primary-btn" (click)="navigateToDashboard()">Get Started</button>
+        <button class="secondary-btn" (click)="learnMore()">Learn More</button>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="assets/images/front.jpeg" alt="Smart Farm Illustration">
+    </div>
+  </section>
+
+  <!-- What is Eden Link Section -->
+  <section class="what-is-edenlink">
+    <div class="container">
+      <h2 class="section-title">What is Eden Link?</h2>
+      <div class="edenlink-description">
+        <p>Eden Link is an AI-powered monitoring and management platform specifically designed for hydroponic farming systems. Our platform integrates with your existing hydroponic setup to collect real-time data, analyze growing conditions, and provide actionable insights to optimize your crop yields.</p>
+        <div class="compatibility">
+          <h3>Compatible with all hydroponic systems:</h3>
+          <div class="system-icons">
+            <div class="system-icon">
+              <div class="icon">💧</div>
+              <span>NFT</span>
+            </div>
+            <div class="system-icon">
+              <div class="icon">🌊</div>
+              <span>DWC</span>
+            </div>
+            <div class="system-icon">
+              <div class="icon">💦</div>
+              <span>Drip</span>
+            </div>
+            <div class="system-icon">
+              <div class="icon">🪴</div>
+              <span>Media-Based</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+      
+  <!-- Features Section -->
+  <section class="features">
+    <h2 class="section-title">Why Choose Eden Link?</h2>
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let feature of features">
+        <div class="feature-icon">{{feature.icon}}</div>
+        <h3 class="feature-title">{{feature.title}}</h3>
+        <p class="feature-description">{{feature.description}}</p>
+      </div>
+    </div>
+  </section>
+      
+  <!-- Testimonials Section -->
+  <section class="testimonials">
+    <h2 class="section-title">What Our Farmers Say</h2>
+    <div class="testimonial-carousel">
+      <div class="testimonial-card" [@slideAnimation]="currentTestimonialIndex">
+        <p class="testimonial-quote">{{ testimonials[currentTestimonialIndex].quote }}</p>
+        <div class="testimonial-author">
+          <p class="author-name">{{ testimonials[currentTestimonialIndex].author }}</p>
+          <p class="author-role">{{ testimonials[currentTestimonialIndex].role }}</p>
+        </div>
+      </div>
+      <div class="carousel-dots">
+        <span *ngFor="let t of testimonials; let i = index"
+              [class.active]="i === currentTestimonialIndex"
+              (click)="currentTestimonialIndex = i"></span>
+      </div>
+    </div>
+  </section>
+     
+  <section class="cta-section">
+    <h2>Ready to Transform Your Farm?</h2>
+    <p>Join thousands of farmers who are already using Eden Link to improve their yields</p>
+    <button class="primary-btn" (click)="navigateToDashboard()">Start Now</button>
+  </section>
+</div>

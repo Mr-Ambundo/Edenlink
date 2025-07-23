@@ -1,0 +1,228 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>System Settings</h1>
+    <div class="header-actions">
+      <button class="btn-outline" (click)="checkForUpdates()">
+        <i class="fas fa-sync-alt"></i>
+        {{ systemVersion.updateAvailable ? 'Update Available!' : 'Check for Updates' }}
+      </button>
+      <button class="btn-primary" (click)="saveSettings()">
+        <i class="fas fa-save"></i>
+        Save Changes
+      </button>
+    </div>
+  </div>
+
+  <div class="settings-grid">
+    <!-- System Information Section -->
+    <div class="settings-section">
+      <div class="section-header">
+        <i class="fas fa-info-circle"></i>
+        <h2>System Information</h2>
+      </div>
+      <div class="settings-card">
+        <div class="version-info">
+          <div class="info-item">
+            <label>Current Version</label>
+            <span class="version-number">{{systemVersion.current}}</span>
+          </div>
+          <div class="info-item">
+            <label>Latest Version</label>
+            <span class="version-number">{{systemVersion.latest}}</span>
+          </div>
+          <div class="update-status" *ngIf="systemVersion.updateAvailable">
+            <span class="update-badge">Update Available</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications Section -->
+    <div class="settings-section">
+      <div class="section-header">
+        <i class="fas fa-bell"></i>
+        <h2>Notifications</h2>
+      </div>
+      <div class="settings-card">
+        <div class="setting-item">
+          <div class="toggle-item">
+            <label>
+              <input type="checkbox" [(ngModel)]="systemSettings.notifications.emailAlerts">
+              <span class="toggle-label">Email Alerts</span>
+            </label>
+            <span class="setting-description">Receive important alerts via email</span>
+          </div>
+        </div>
+        <div class="setting-item">
+          <div class="toggle-item">
+            <label>
+              <input type="checkbox" [(ngModel)]="systemSettings.notifications.pushNotifications">
+              <span class="toggle-label">Push Notifications</span>
+            </label>
+            <span class="setting-description">Get instant updates on your device</span>
+          </div>
+        </div>
+        <div class="setting-item">
+          <div class="toggle-item">
+            <label>
+              <input type="checkbox" [(ngModel)]="systemSettings.notifications.smsAlerts">
+              <span class="toggle-label">SMS Alerts</span>
+            </label>
+            <span class="setting-description">Receive critical alerts via SMS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Management Section -->
+    <div class="settings-section">
+      <div class="section-header">
+        <i class="fas fa-database"></i>
+        <h2>Data Management</h2>
+      </div>
+      <div class="settings-card">
+        <div class="setting-item">
+          <label>Data Retention Period</label>
+          <div class="input-with-unit">
+            <input type="number" [(ngModel)]="systemSettings.dataManagement.dataRetentionPeriod" min="1" max="365">
+            <span class="unit">days</span>
+          </div>
+        </div>
+        <div class="setting-item">
+          <div class="toggle-item">
+            <label>
+              <input type="checkbox" [(ngModel)]="systemSettings.dataManagement.autoBackup">
+              <span class="toggle-label">Auto Backup</span>
+            </label>
+          </div>
+        </div>
+        <div class="setting-item">
+          <label>Backup Frequency</label>
+          <select [(ngModel)]="systemSettings.dataManagement.backupFrequency">
+            <option *ngFor="let option of backupFrequencyOptions" [value]="option.value">
+              {{option.label}}
+            </option>
+          </select>
+        </div>
+        <div class="setting-item buttons">
+          <button class="btn-outline" (click)="backupSystem()">
+            <i class="fas fa-download"></i>
+            Backup Now
+          </button>
+          <button class="btn-outline" (click)="restoreFromBackup()">
+            <i class="fas fa-upload"></i>
+            Restore
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monitoring Settings Section -->
+    <div class="settings-section">
+      <div class="section-header">
+        <i class="fas fa-chart-line"></i>
+        <h2>Monitoring Settings</h2>
+      </div>
+      <div class="settings-card">
+        <div class="setting-item">
+          <label>Sensor Polling Interval</label>
+          <div class="input-with-unit">
+            <input type="number" [(ngModel)]="monitoringSettings.sensorPollingInterval" min="5" max="300">
+            <span class="unit">seconds</span>
+          </div>
+        </div>
+        
+        <h3>Threshold Settings</h3>
+        <div class="threshold-grid">
+          <div class="threshold-item">
+            <div class="threshold-header">
+              <i class="fas fa-temperature-high"></i>
+              <label>Temperature</label>
+            </div>
+            <div class="range-inputs">
+              <div class="range-input">
+                <input type="number" [(ngModel)]="monitoringSettings.thresholds.temperature.min" placeholder="Min">
+                <span class="unit">°C</span>
+              </div>
+              <span class="range-separator">to</span>
+              <div class="range-input">
+                <input type="number" [(ngModel)]="monitoringSettings.thresholds.temperature.max" placeholder="Max">
+                <span class="unit">°C</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="threshold-item">
+            <div class="threshold-header">
+              <i class="fas fa-tint"></i>
+              <label>Humidity</label>
+            </div>
+            <div class="range-inputs">
+              <div class="range-input">
+                <input type="number" [(ngModel)]="monitoringSettings.thresholds.humidity.min" placeholder="Min">
+                <span class="unit">%</span>
+              </div>
+              <span class="range-separator">to</span>
+              <div class="range-input">
+                <input type="number" [(ngModel)]="monitoringSettings.thresholds.humidity.max" placeholder="Max">
+                <span class="unit">%</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="threshold-item">
+            <div class="threshold-header">
+              <i class="fas fa-sun"></i>
+              <label>Light</label>
+            </div>
+            <div class="range-inputs">
+              <div class="range-input">
+                <input type="number" [(ngModel)]="monitoringSettings.thresholds.light.min" placeholder="Min">
+                <span class="unit">lux</span>
+              </div>
+              <span class="range-separator">to</span>
+              <div class="range-input">
+                <input type="number" [(ngModel)]="monitoringSettings.thresholds.light.max" placeholder="Max">
+                <span class="unit">lux</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="threshold-item">
+            <div class="threshold-header">
+              <i class="fas fa-bolt"></i>
+              <label>EC</label>
+            </div>
+            <div class="range-inputs">
+              <div class="range-input">
+                <input type="number" [(ngModel)]="monitoringSettings.thresholds.ec.min" placeholder="Min" step="0.1">
+                <span class="unit">mS/cm</span>
+              </div>
+              <span class="range-separator">to</span>
+              <div class="range-input">
+                <input type="number" [(ngModel)]="monitoringSettings.thresholds.ec.max" placeholder="Max" step="0.1">
+                <span class="unit">mS/cm</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="threshold-item">
+            <div class="threshold-header">
+              <i class="fas fa-flask"></i>
+              <label>pH</label>
+            </div>
+            <div class="range-inputs">
+              <div class="range-input">
+                <input type="number" [(ngModel)]="monitoringSettings.thresholds.ph.min" placeholder="Min" step="0.1">
+              </div>
+              <span class="range-separator">to</span>
+              <div class="range-input">
+                <input type="number" [(ngModel)]="monitoringSettings.thresholds.ph.max" placeholder="Max" step="0.1">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

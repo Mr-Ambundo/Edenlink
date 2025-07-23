@@ -1,0 +1,34 @@
+<button class="mobile-toggle" (click)="toggleMobileSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+
+<div class="sidebar-overlay" [class.show]="isMobileSidebarOpen" (click)="toggleMobileSidebar()"></div>
+
+<div class="sidebar" [class.open]="isMobileSidebarOpen" [class.collapsed]="isCollapsed">
+  <div class="sidebar-header">
+    <div class="logo">E</div>
+    <div class="logo-text" [class.hidden]="isCollapsed">Eden Link</div>
+    <button class="collapse-toggle" (click)="toggleSidebar()">
+      <i class="fas" [class.fa-chevron-left]="!isCollapsed" [class.fa-chevron-right]="isCollapsed"></i>
+    </button>
+  </div>
+  
+  <div class="profile" [class.collapsed]="isCollapsed">
+    <div class="avatar"></div>
+    <div class="profile-info" [class.hidden]="isCollapsed">
+      <div class="profile-name">John</div>
+      <div class="profile-role">Farm Owner</div>
+    </div>
+  </div>
+  
+  <ul class="nav-list">
+    <li *ngFor="let item of navItems" 
+        class="nav-item"
+        [class.collapsed]="isCollapsed"
+        [class.active]="currentRoute === item.path"
+        (click)="navigateTo(item.path)">
+      <i class="fas" [ngClass]="item.icon"></i>
+      <span [class.hidden]="isCollapsed">{{ item.label }}</span>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,70 @@
+<div class="partnerships-container">
+  <div class="partnerships-header">
+    <h1>Partnerships & Collaboration</h1>
+    <button class="btn btn-primary" (click)="openPartnershipRequest()">Request Partnership</button>
+  </div>
+
+  <div class="partners-grid">
+    <!-- Current Partners Section -->
+    
+
+    <!-- Collaboration Opportunities -->
+    <div class="opportunities-section">
+      <h2>Collaboration Opportunities</h2>
+      <div class="opportunity-cards">
+        <div class="opportunity-card" *ngFor="let opportunity of collaborationOpportunities">
+          <div class="opportunity-header">
+            <h3>{{ opportunity.title }}</h3>
+            <span class="opportunity-type" [class]="opportunity.type">{{ opportunity.type }}</span>
+          </div>
+          <p class="opportunity-description">{{ opportunity.description }}</p>
+          <div class="opportunity-details">
+            <div class="detail-item">
+              <i class="fas fa-calendar"></i>
+              <span>Duration: {{ opportunity.duration }}</span>
+            </div>
+            <div class="detail-item">
+              <i class="fas fa-users"></i>
+              <span>Partners Needed: {{ opportunity.partnersNeeded }}</span>
+            </div>
+            <div class="detail-item">
+             
+             
+            </div>
+          </div>
+          <div class="opportunity-actions">
+            <button class="btn btn-primary" (click)="applyForOpportunity(opportunity)">Apply Now</button>
+            <button class="btn btn-outline" (click)="learnMore(opportunity)">Learn More</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Partnership Benefits -->
+  <div class="benefits-section">
+    <h2>Partnership Benefits</h2>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <i class="fas fa-handshake"></i>
+        <h3>Shared Resources</h3>
+        <p>Access to shared technology, research data, and farming expertise</p>
+      </div>
+      <div class="benefit-card">
+        <i class="fas fa-chart-line"></i>
+        <h3>Market Access</h3>
+        <p>Expanded market reach and distribution networks</p>
+      </div>
+      <div class="benefit-card">
+        <i class="fas fa-microscope"></i>
+        <h3>Research Collaboration</h3>
+        <p>Joint research projects and knowledge sharing</p>
+      </div>
+      <div class="benefit-card">
+        <i class="fas fa-leaf"></i>
+        <h3>Sustainability</h3>
+        <p>Collective impact on sustainable farming practices</p>
+      </div>
+    </div>
+  </div>
+</div>

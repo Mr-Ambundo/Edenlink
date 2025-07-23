@@ -1,0 +1,370 @@
+/* src/app/features/crop-roadmap/crop-roadmap.component.css */
+.crop-roadmap-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .section-header {
+    margin-bottom: 30px;
+  }
+  
+  .section-header h1 {
+    color: #006d5b;
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+  
+  .section-description {
+    color: #4a4a4a;
+    font-size: 16px;
+  }
+  
+  .card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    margin-bottom: 30px;
+  }
+  
+  .card h2 {
+    color: #006d5b;
+    font-size: 22px;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+  
+  /* Form styling */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #444;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: #008e73;
+    box-shadow: 0 0 0 2px rgba(0, 142, 115, 0.2);
+  }
+  
+  .error-message {
+    color: #d32f2f;
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  
+  .btn-primary, .btn-secondary {
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 16px;
+  }
+  
+  .btn-primary {
+    background-color: #008e73;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #00594d;
+  }
+  
+  .btn-primary:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .btn-secondary {
+    background-color: #f0ede6;
+    color: #006d5b;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #e0dcd2;
+  }
+  
+  .btn-secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* Active Crop Cycle */
+  .cycle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  
+  .cycle-meta {
+    color: #666;
+    margin-top: 4px;
+  }
+  
+  .progress-container {
+    margin-bottom: 30px;
+  }
+  
+  .progress-bar {
+    height: 12px;
+    background-color: #e0f2f1;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background-color: #006d5b;
+    transition: width 0.3s ease;
+  }
+  
+  .progress-text {
+    text-align: right;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* Timeline */
+  .stages-timeline {
+    margin-top: 40px;
+  }
+  
+  .timeline-container {
+    position: relative;
+    padding-left: 40px;
+  }
+  
+  .timeline-track {
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #e0e0e0;
+    transform: translateX(-50%);
+  }
+  
+  .timeline-stage {
+    position: relative;
+    margin-bottom: 40px;
+  }
+  
+  .stage-marker {
+    position: absolute;
+    left: -40px;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    background-color: #f0ede6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+  
+  .stage-marker.active {
+    background-color: #006d5b;
+  }
+  
+  .marker-icon {
+    font-weight: bold;
+    color: #006d5b;
+  }
+  
+  .stage-marker.active .marker-icon {
+    color: white;
+  }
+  
+  .timeline-stage.completed .stage-marker {
+    background-color: #8d90bb;
+  }
+  
+  .timeline-stage.completed .marker-icon {
+    color: white;
+  }
+  
+  /* src/app/features/crop-roadmap/crop-roadmap.component.css (continued) */
+.stage-content {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    border-left: 3px solid #f0ede6;
+  }
+  
+  .timeline-stage.completed .stage-content {
+    border-left-color: #8d90bb;
+  }
+  
+  .stage-content h3 {
+    color: #006d5b;
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 18px;
+  }
+  
+  .stage-duration {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  
+  .stage-description {
+    margin-bottom: 16px;
+    color: #444;
+  }
+  
+  .stage-tasks {
+    margin-top: 16px;
+  }
+  
+  .stage-tasks h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .stage-tasks ul {
+    padding-left: 20px;
+    margin: 0;
+  }
+  
+  .stage-tasks li {
+    margin-bottom: 6px;
+    color: #444;
+  }
+  
+  .stage-tasks li.completed {
+    text-decoration: line-through;
+    color: #888;
+  }
+  
+  .stage-actions {
+    margin-top: 16px;
+  }
+  
+  /* Modal */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background-color: white;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .modal-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .modal-header h2 {
+    margin: 0;
+    color: #006d5b;
+    font-size: 20px;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+  }
+  
+  .close-button:hover {
+    color: #333;
+  }
+  
+  .modal-body {
+    padding: 24px;
+  }
+  
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .ai-message {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .ai-icon {
+    font-size: 24px;
+  }
+  
+  .ai-content {
+    flex: 1;
+    background-color: #f0f9f7;
+    padding: 16px;
+    border-radius: 8px;
+    color: #333;
+  }
+  
+  @media (max-width: 768px) {
+    .cycle-header {
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .cycle-actions {
+      width: 100%;
+    }
+    
+    .cycle-actions button {
+      width: 100%;
+    }
+    
+    .timeline-container {
+      padding-left: 30px;
+    }
+    
+    .stage-marker {
+      left: -30px;
+      width: 30px;
+      height: 30px;
+    }
+    
+    .stage-content {
+      padding: 16px;
+    }
+  }

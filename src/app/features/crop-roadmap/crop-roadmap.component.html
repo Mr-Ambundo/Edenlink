@@ -1,0 +1,122 @@
+<!-- src/app/features/crop-roadmap/crop-roadmap.component.html -->
+<div class="crop-roadmap-container">
+    <section class="section-header">
+      <h1>Crop Cycle Roadmap</h1>
+      <p class="section-description">Track your crop's growth stages and receive AI-powered insights.</p>
+    </section>
+  
+    <section class="crop-setup" *ngIf="!currentCropCycle">
+      <div class="card">
+        <h2>Start a New Crop Cycle</h2>
+        <form [formGroup]="cropForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="cropType">Crop Type</label>
+            <select id="cropType" formControlName="cropType">
+              <option value="">Select a crop type</option>
+              <option *ngFor="let crop of cropTypes" [value]="crop.id">{{ crop.name }}</option>
+            </select>
+            <div class="error-message" *ngIf="cropForm.get('cropType')?.invalid && cropForm.get('cropType')?.touched">
+              Please select a crop type
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="plantDate">Planting Date</label>
+            <input type="date" id="plantDate" formControlName="plantDate">
+            <div class="error-message" *ngIf="cropForm.get('plantDate')?.invalid && cropForm.get('plantDate')?.touched">
+              Please select a valid planting date
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="cycleDuration">Cycle Duration (weeks)</label>
+            <input type="number" id="cycleDuration" formControlName="cycleDuration" min="1" max="52">
+            <div class="error-message" *ngIf="cropForm.get('cycleDuration')?.invalid && cropForm.get('cycleDuration')?.touched">
+              Please enter a valid duration (1-52 weeks)
+            </div>
+          </div>
+  
+          <button type="submit" class="btn-primary" [disabled]="cropForm.invalid">Start Tracking</button>
+        </form>
+      </div>
+    </section>
+  
+    <section class="active-crop-cycle" *ngIf="currentCropCycle">
+      <div class="card">
+        <div class="cycle-header">
+          <div>
+            <h2>{{ currentCropCycle.cropName }}</h2>
+            <p class="cycle-meta">
+              Planted on {{ currentCropCycle.plantDate | date:'MMM d, y' }} 
+              • Week {{ getCurrentWeek() }} of {{ currentCropCycle.durationWeeks }}
+            </p>
+          </div>
+          <div class="cycle-actions">
+            <button class="btn-secondary" (click)="getAIInsight()" [disabled]="loadingInsight">
+              <span *ngIf="!loadingInsight">AI Insight</span>
+              <span *ngIf="loadingInsight">Loading...</span>
+            </button>
+          </div>
+        </div>
+  
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="calculateProgress()"></div>
+          </div>
+          <div class="progress-text">{{ calculateProgress() }}% complete</div>
+        </div>
+  
+        <div class="stages-timeline">
+          <div class="timeline-container">
+            <div class="timeline-track"></div>
+            
+            <div class="timeline-stage" *ngFor="let stage of currentCropCycle.stages; let i = index" 
+                 [class.completed]="stage.completed">
+              <div class="stage-marker" [class.active]="getCurrentWeek() >= stage.startWeek && getCurrentWeek() <= stage.endWeek">
+                <div class="marker-icon">{{ i + 1 }}</div>
+              </div>
+              <div class="stage-content">
+                <h3>{{ stage.name }}</h3>
+                <p class="stage-duration">Week {{ stage.startWeek }} - {{ stage.endWeek }}</p>
+                <p class="stage-description">{{ stage.description }}</p>
+                
+                <div class="stage-tasks">
+                  <h4>Tasks:</h4>
+                  <ul>
+                    <li *ngFor="let task of stage.tasks" [class.completed]="task.completed">
+                      {{ task.description }}
+                    </li>
+                  </ul>
+                </div>
+                
+                <div class="stage-actions" *ngIf="!stage.completed && getCurrentWeek() >= stage.startWeek">
+                  <button class="btn-secondary" (click)="markStageComplete(i)">Mark Complete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- AI Insight Modal -->
+    <div class="modal" *ngIf="showAiInsight">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>AI Growth Insight</h2>
+          <button class="close-button" (click)="closeAIInsight()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="ai-message">
+            <div class="ai-icon">🤖</div>
+            <div class="ai-content">
+              <p [innerHTML]="aiInsight"></p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" (click)="closeAIInsight()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
