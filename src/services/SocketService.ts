@@ -9,6 +9,14 @@ export class SocketService {
   private eventListeners: Map<string, Function[]> = new Map()
 
   async connect(url?: string): Promise<void> {
+    // Check if WebSocket connections are enabled
+    const socketsEnabled = import.meta.env.VITE_ENABLE_SOCKETS !== 'false'
+    
+    if (!socketsEnabled) {
+      console.log('🔌 WebSocket connections disabled, using mock data only')
+      return Promise.resolve()
+    }
+    
     const socketUrl = url || import.meta.env.VITE_SOCKET_URL || 'ws://localhost:3000'
     
     try {
