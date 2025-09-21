@@ -200,3 +200,6 @@ export class SocketService {
     return this.socket?.connected || false
   }
 }
+
+// Export singleton instance
+export const socketService = new SocketService()
