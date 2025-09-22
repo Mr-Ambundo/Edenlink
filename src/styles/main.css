@@ -179,4 +179,20 @@
   .print-avoid-break {
     page-break-inside: avoid;
   }
+  
+  /* Hide sidebar in print */
+  .sidebar-container {
+    display: none !important;
+  }
+  
+  #app {
+    margin-left: 0 !important;
+  }
+}
+
+/* Responsive adjustments for sidebar */
+@media (max-width: 1024px) {
+  #app {
+    margin-left: 0 !important;
+  }
 }
