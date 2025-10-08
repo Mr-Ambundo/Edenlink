@@ -14,6 +14,10 @@ class App {
     this.store = new AppStore()
     this.socketService = new SocketService()
     this.router = new Router()
+
+    // Expose router globally for navigation
+    ;(window as any).router = this.router
+
     this.init()
   }
 
@@ -41,9 +45,16 @@ class App {
     window.addEventListener('popstate', () => {
       this.updateSidebarVisibility()
     })
-    
-    // Initial sidebar setup
-    this.updateSidebarVisibility()
+
+    // Listen for custom navigate events
+    window.addEventListener('navigate', () => {
+      setTimeout(() => this.updateSidebarVisibility(), 50)
+    })
+
+    // Initial sidebar setup after a short delay
+    setTimeout(() => {
+      this.updateSidebarVisibility()
+    }, 100)
   }
 
   private updateSidebarVisibility(): void {

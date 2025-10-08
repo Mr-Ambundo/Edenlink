@@ -1,4 +1,4 @@
-import { Route } from '@types/index'
+import type { Route } from '../types'
 
 export class Router {
   private routes: Route[] = [
@@ -47,6 +47,8 @@ export class Router {
       this.currentRoute = path
       history.pushState(null, '', path)
       this.handleRoute()
+      // Dispatch custom event for sidebar update
+      window.dispatchEvent(new Event('navigate'))
     }
   }
 

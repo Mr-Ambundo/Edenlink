@@ -1,23 +1,21 @@
 import { io, Socket } from 'socket.io-client'
-import { SocketEvent } from '@types/index'
 
 export class SocketService {
   private socket: Socket | null = null
-  private reconnectAttempts = 0
   private maxReconnectAttempts = 5
   private reconnectDelay = 1000
   private eventListeners: Map<string, Function[]> = new Map()
 
   async connect(url?: string): Promise<void> {
     // Check if WebSocket connections are enabled
-    const socketsEnabled = import.meta.env.VITE_ENABLE_SOCKETS !== 'false'
+    const socketsEnabled = false
     
     if (!socketsEnabled) {
       console.log('🔌 WebSocket connections disabled, using mock data only')
       return Promise.resolve()
     }
     
-    const socketUrl = url || import.meta.env.VITE_SOCKET_URL || 'ws://localhost:3000'
+    const socketUrl = url || 'ws://localhost:3000'
     
     try {
       this.socket = io(socketUrl, {
@@ -35,7 +33,6 @@ export class SocketService {
         
         this.socket.on('connect', () => {
           console.log('🔌 Socket connected successfully')
-          this.reconnectAttempts = 0
           resolve()
         })
 
@@ -58,8 +55,8 @@ export class SocketService {
       console.log('🔌 Socket disconnected:', reason)
     })
 
-    this.socket.on('reconnect', (attemptNumber) => {
-      console.log(`🔌 Socket reconnected after ${attemptNumber} attempts`)
+    this.socket.on('reconnect', () => {
+      console.log('🔌 Socket reconnected')
     })
 
     this.socket.on('reconnect_error', (error) => {
@@ -135,7 +132,7 @@ export class SocketService {
       } else {
         // Fallback to mock AI response
         setTimeout(() => {
-          resolve(this.getMockAiResponse(type, data))
+          resolve(this.getMockAiResponse(type))
         }, 1000)
       }
     })
@@ -165,7 +162,7 @@ export class SocketService {
     this.send('system_command', { command, params })
   }
 
-  private getMockAiResponse(type: string, data: any): any {
+  private getMockAiResponse(type: string): any {
     const mockResponses = {
       crop_analysis: {
         health: 85,

@@ -1,7 +1,6 @@
 import { Chart, registerables } from 'chart.js'
 import { apiService } from '../../services/ApiService'
 import { socketService } from '../../services/SocketService'
-import { appStore } from '../../stores/AppStore'
 import type { Sensor, Crop, SystemStatus } from '../../types'
 
 // Register Chart.js components
@@ -121,21 +120,21 @@ export default class DashboardPage {
       // Load sensors
       const sensorsResponse = await apiService.getSensors()
       if (sensorsResponse.success) {
-        this.sensors = sensorsResponse.data
+        this.sensors = sensorsResponse.data as Sensor[]
         this.renderMetrics()
       }
 
       // Load crops
       const cropsResponse = await apiService.getCrops()
       if (cropsResponse.success) {
-        this.crops = cropsResponse.data
+        this.crops = cropsResponse.data as Crop[]
         this.renderCrops()
       }
 
       // Load system status
       const statusResponse = await apiService.getSystemStatus()
       if (statusResponse.success) {
-        this.systemStatus = statusResponse.data
+        this.systemStatus = statusResponse.data as SystemStatus
         this.renderSystemStatus()
       }
 
@@ -275,14 +274,14 @@ export default class DashboardPage {
     try {
       const response = await apiService.getAiRecommendations()
       if (response.success) {
-        this.renderAiRecommendations(response.data)
+        this.renderAiRecommendations(response.data as any[])
       }
     } catch (error) {
       console.error('Error loading AI recommendations:', error)
     }
   }
 
-  private renderAiRecommendations(recommendations: any[]): void {
+  private renderAiRecommendations(recommendations: unknown[]): void {
     const container = document.getElementById('ai-recommendations')
     if (!container) return
 
@@ -296,7 +295,7 @@ export default class DashboardPage {
       return
     }
 
-    container.innerHTML = recommendations.map(rec => `
+    container.innerHTML = (recommendations as any[]).map((rec: any) => `
       <div class="flex items-start p-4 bg-gray-50 rounded-lg">
         <div class="flex-shrink-0">
           <i class="fas fa-lightbulb text-yellow-500 text-lg"></i>
@@ -421,13 +420,9 @@ export default class DashboardPage {
     }, 5000)
 
     // Listen for socket events
-    socketService.on('sensor_update', (data) => {
-      this.handleSensorUpdate(data)
-    })
+    socketService.on('sensor_update', this.handleSensorUpdate)
 
-    socketService.on('ai_recommendation', (data) => {
-      this.handleAiRecommendation(data)
-    })
+    socketService.on('ai_recommendation', this.handleAiRecommendation)
   }
 
   private updateChartData(): void {
@@ -467,7 +462,7 @@ export default class DashboardPage {
     this.chart.update('none')
   }
 
-  private handleSensorUpdate(data: any): void {
+  private handleSensorUpdate = (data: { sensorId: string; [key: string]: any }): void => {
     // Update sensor data in real-time
     const sensorIndex = this.sensors.findIndex(s => s.id === data.sensorId)
     if (sensorIndex !== -1) {
@@ -476,7 +471,7 @@ export default class DashboardPage {
     }
   }
 
-  private handleAiRecommendation(data: any): void {
+  private handleAiRecommendation = (data: { message: string }): void => {
     // Show new AI recommendation
     this.showAlert(`New AI Recommendation: ${data.message}`, 'info')
   }
@@ -496,21 +491,24 @@ export default class DashboardPage {
 
   private async exportData(): Promise<void> {
     try {
-      const response = await apiService.exportData()
-      if (response.success) {
-        // Create and download file
-        const blob = new Blob([JSON.stringify(response.data, null, 2)], { type: 'application/json' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `eden-link-data-${new Date().toISOString().split('T')[0]}.json`
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        URL.revokeObjectURL(url)
-        
-        this.showAlert('Data exported successfully!', 'success')
+      const data = {
+        sensors: this.sensors,
+        crops: this.crops,
+        systemStatus: this.systemStatus,
+        exportDate: new Date().toISOString()
       }
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `eden-link-data-${new Date().toISOString().split('T')[0]}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      this.showAlert('Data exported successfully!', 'success')
     } catch (error) {
       console.error('Export failed:', error)
       this.showAlert('Failed to export data', 'error')
@@ -524,10 +522,10 @@ export default class DashboardPage {
     }
 
     try {
-      const response = await apiService.getAiTips()
-      if (response.success) {
-        // Navigate to AI tips page
-        window.router?.navigate('/ai-tips')
+      // Navigate to AI tips page
+      const router = (window as any).router
+      if (router) {
+        router.navigate('/ai-tips')
       }
     } catch (error) {
       console.error('Failed to get AI tips:', error)

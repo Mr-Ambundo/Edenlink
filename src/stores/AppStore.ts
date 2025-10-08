@@ -1,4 +1,3 @@
-import { User, Sensor, Crop, AiTip, Notification, SystemStatus, TrainingModule } from '@types/index'
 
 export class AppStore {
   private data: Map<string, any> = new Map()
@@ -206,7 +205,7 @@ export class AppStore {
   private saveToStorage(): void {
     try {
       const dataObj = Object.fromEntries(this.data)
-      localStorage.setItem('eden-link-data', JSON.stringify(dataObj, (key, value) => {
+      localStorage.setItem('eden-link-data', JSON.stringify(dataObj, (_key, value) => {
         if (value instanceof Date) {
           return { __type: 'Date', value: value.toISOString() }
         }
@@ -221,7 +220,7 @@ export class AppStore {
     try {
       const stored = localStorage.getItem('eden-link-data')
       if (stored) {
-        const parsed = JSON.parse(stored, (key, value) => {
+        const parsed = JSON.parse(stored, (_key, value) => {
           if (value && value.__type === 'Date') {
             return new Date(value.value)
           }

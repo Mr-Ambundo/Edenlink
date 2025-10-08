@@ -1,11 +1,11 @@
-import { ApiResponse } from '@types/index'
+import type { ApiResponse } from '../types'
 
 export class ApiService {
   private baseUrl: string
   private timeout: number = 10000
 
   constructor() {
-    this.baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+    this.baseUrl = 'http://localhost:3000/api'
   }
 
   private async request<T>(
